@@ -56,20 +56,17 @@ class Scheduling_Algorithms:
         print(self.return_average('FCFS', turnaround_times, waiting_times, response_times))
     
     def SJF(self):
-        # Inicializando as listas para armazenar os tempos
         completion_times = [0] * self.processes_quantity
         turnaround_times = [0] * self.processes_quantity
         response_times = [0] * self.processes_quantity
         waiting_times = [0] * self.processes_quantity
 
-        # Lista para verificar quais processos já foram completados
         completed = [False] * self.processes_quantity
 
         current_time = 0
         completed_count = 0
 
         while completed_count < self.processes_quantity:
-            # Selecionar o processo com o menor burst time que já tenha chegado
             shortest_index = None
             shortest_burst = float('inf')
 
@@ -80,10 +77,8 @@ class Scheduling_Algorithms:
                     shortest_index = i
 
             if shortest_index is None:
-                # Se nenhum processo foi encontrado, incrementar o tempo
                 current_time += 1
             else:
-                # Processar o processo selecionado
                 arrival_time, burst_time = self.processes[shortest_index]
                 start_time = current_time
                 completion_times[shortest_index] = start_time + burst_time
