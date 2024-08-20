@@ -1,3 +1,5 @@
+import argparse
+
 class Scheduling_Algorithms:
     def __init__(self, file_path):
         self.load_file(file_path)
@@ -102,25 +104,25 @@ class Scheduling_Algorithms:
         current_time = 0
         completion_times = [0] * self.processes_quantity
         turnaround_times = [0] * self.processes_quantity
-        response_times = [-1] * self.processes_quantity  # Inicializando com -1 para identificar o primeiro acesso
+        response_times = [-1] * self.processes_quantity # Iniciando com -1 para identificar o primeiro acesso
         waiting_times = [0] * self.processes_quantity
-
+        
         remaining_burst_times = [bt for _, bt in self.processes]
         process_queue = []
-
+        
         while len(process_queue) > 0 or any(bt > 0 for bt in remaining_burst_times):
-            # Adiciona processos que chegaram ao tempo atual à fila
+            
             for i in range(self.processes_quantity):
                 if self.processes[i][0] <= current_time and i not in process_queue and remaining_burst_times[i] > 0:
                     process_queue.append(i)
-
+            
             if process_queue:
                 i = process_queue.pop(0)
                 arrival_time, burst_time = self.processes[i]
-
+                
                 if response_times[i] == -1:
                     response_times[i] = current_time - arrival_time
-
+                    
                 if remaining_burst_times[i] <= quantum:
                     current_time += remaining_burst_times[i]
                     remaining_burst_times[i] = 0
@@ -128,23 +130,30 @@ class Scheduling_Algorithms:
                 else:
                     current_time += quantum
                     remaining_burst_times[i] -= quantum
+                    for j in range(self.processes_quantity):
+                        if self.processes[j][0] <= current_time and j not in process_queue and remaining_burst_times[j] > 0 and j != i:
+                            process_queue.append(j)
                     process_queue.append(i)
-
-                # Calcula turnaround e waiting times após o processo terminar
+                    
                 if remaining_burst_times[i] == 0:
                     turnaround_times[i] = completion_times[i] - arrival_time
                     waiting_times[i] = turnaround_times[i] - burst_time
+                    
             else:
-                current_time += 1  # Avança o tempo para o próximo processo
+                current_time += 1
 
         print(self.return_average('RR', turnaround_times, response_times, waiting_times))
 
         
     def run(self):
-        #self.FCFS()
-        #
-        # self.SJF()
+        self.FCFS()
+        self.SJF()
         self.RoundRobin2()
         
-scheduling = Scheduling_Algorithms('test.txt')
-scheduling.run()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Scheduling Algorithms")
+    parser.add_argument("file_path", help="Path to the input file containing process arrival and burst times")
+    args = parser.parse_args()
+
+    scheduling = Scheduling_Algorithms(args.file_path)
+    scheduling.run()
