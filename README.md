@@ -55,7 +55,7 @@ Este projeto implementa três algoritmos de escalonamento de processos em sistem
 2. **Executar o Script**:
    - No terminal, execute o script com o caminho para o arquivo de entrada como argumento:
      ```bash
-     python scheduling_algorithms.py input.txt
+     python escalonador.py input.txt
      ```
 
 3. **Saída**:
